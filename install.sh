@@ -144,8 +144,8 @@ while true; do
     echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m5\033[1;31m] \033[1;37m• \033[1;33mREINSTALAR PROXY \033[0m"
     echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m6\033[1;31m] \033[1;37m• \033[1;33mSAIR [0m"
     echo ""
-	echo -ne "\033[1;32mOQUE DESEJA FAZER \033[1;33m?\033[1;37m "
-	read resposta
+    echo -ne "\033[1;32mOQUE DESEJA FAZER \033[1;33m?\033[1;37m "
+    
     read -p "Escolha uma opção: " choice
     
     case $choice in
@@ -167,7 +167,13 @@ while true; do
             systemctl list-units --type=service --state=running | grep proxy-
         ;;
         5)
-            echo -e "\033[1;32mDESINSTALAR PROXY\033[1;33m"
+            echo -e "\033[1;32mDESATIVANDO O PROXY\033[1;33m"
+	    echo ""
+	    fun_bar 'fun_socksoff'
+	    echo ""
+	    echo -e "\033[1;32mPROXY SOCKS DESATIVADO COM SUCESSO!\033[1;33m"
+	    sleep 3
+	    fun_socks 
             uninstall_proxy
             install_proxy
         ;;
