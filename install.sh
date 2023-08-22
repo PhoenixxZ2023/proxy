@@ -135,14 +135,17 @@ fi
 # Menu de gerenciamento
 while true; do
     clear
-    echo "Menu de Gerenciamento do Serviço Proxy:"
-    echo "1. Configurar e Iniciar um Novo Serviço"
-    echo "2. Parar e Remover um Serviço"
-    echo "3. Reiniciar um Serviço"
-    echo "4. Ver Status dos Serviços"
-    echo "5. Reinstalar o Proxy"
-    echo "6. Sair"
-    
+    echo -e "\E[41;1;37m       🚀   PROXY DTUNNEL MOD  🚀           \E[0m"
+	echo ""
+    echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m1\033[1;31m] \033[1;37m• \033[1;33mINSTALAR DTUNNELPROXY MOD \033[0m"
+    echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m2\033[1;31m] \033[1;37m• \033[1;33mPARAR OU REMOVER SERVICO \033[0m"
+    echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m3\033[1;31m] \033[1;37m• \033[1;33mREINICIAR PROXY \033[0m"
+    echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m4\033[1;31m] \033[1;37m• \033[1;33mVER STATUS DO PROXY \033[0m"
+    echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m5\033[1;31m] \033[1;37m• \033[1;33mREINSTALAR PROXY \033[0m"
+    echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m6\033[1;31m] \033[1;37m• \033[1;33mSAIR [0m"
+    echo ""
+	echo -ne "\033[1;32mOQUE DESEJA FAZER \033[1;33m?\033[1;37m "
+	read resposta
     read -p "Escolha uma opção: " choice
     
     case $choice in
@@ -153,9 +156,10 @@ while true; do
             stop_and_remove_service
         ;;
         3)
-            echo "Serviços em execução:"
+            echo -e "\033[1;32mSERVIÇO PROXY EM EXECUÇÃO\033[1;33m"
+            echo ""
             systemctl list-units --type=service --state=running | grep proxy-
-            read -p "Digite o número do serviço a ser reiniciado: " service_number
+            read -p "\033[1;32m"QUAL PORTA DESEJA ULTILIZAR: " service_number
             systemctl restart proxy-$service_number
             echo "Serviço proxy-$service_number reiniciado."
         ;;
@@ -163,7 +167,7 @@ while true; do
             systemctl list-units --type=service --state=running | grep proxy-
         ;;
         5)
-            echo "Desinstalando o proxy antes de reinstalar..."
+            echo -e "\033[1;32mDESINSTALAR PROXY\033[1;33m"
             uninstall_proxy
             install_proxy
         ;;
