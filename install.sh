@@ -156,10 +156,9 @@ while true; do
             stop_and_remove_service
         ;;
         3)
-            echo -e "\033[1;32mSERVIÇO PROXY EM EXECUÇÃO\033[1;33m"
-            echo ""
+            echo "Serviços em execução:"
             systemctl list-units --type=service --state=running | grep proxy-
-            read -p "\033[1;32m"QUAL PORTA DESEJA ULTILIZAR: " service_number
+            read -p "Digite o número do serviço a ser reiniciado: " service_number
             systemctl restart proxy-$service_number
             echo "Serviço proxy-$service_number reiniciado."
         ;;
@@ -167,13 +166,7 @@ while true; do
             systemctl list-units --type=service --state=running | grep proxy-
         ;;
         5)
-            echo -e "\033[1;32mDESATIVANDO O PROXY\033[1;33m"
-	    echo ""
-	    fun_bar 'fun_socksoff'
-	    echo ""
-	    echo -e "\033[1;32mPROXY SOCKS DESATIVADO COM SUCESSO!\033[1;33m"
-	    sleep 3
-	    fun_socks 
+            echo "Desinstalando o proxy antes de reinstalar..."
             uninstall_proxy
             install_proxy
         ;;
