@@ -48,12 +48,12 @@ uninstall_proxy() {
 # Configurar e iniciar o serviço
 configure_and_start_service() {
     read -p "Digite a porta a ser usada (--port): " PORT
-    read -p "Você quer usar HTTP (H) ou HTTPS (S)? [H/S]: " HTTP_OR_HTTPS
+    read -p "Você quer usar HTTP (H) ou HTTPS (S) [H/S]?: " HTTP_OR_HTTPS
     if [[ $HTTP_OR_HTTPS == "S" || $HTTP_OR_HTTPS == "s" ]]; then
         read -p "Digite o caminho do certificado (--cert): " CERT_PATH
     fi
-    read -p "Digite o conteúdo da resposta HTTP (--response): " RESPONSE
-    read -p "Você quer usar apenas SSH (Y/N)? [Y/N]: " SSH_ONLY
+    read -p "Digite Status do Proxy HTTP (--response): " RESPONSE
+    read -p "Você quer usar apenas SSH (Y/N)?: " SSH_ONLY
     
     # Defina as opções de comando
     OPTIONS="--port $PORT"
@@ -97,7 +97,7 @@ configure_and_start_service() {
 }
 
 stop_and_remove_service() {
-    read -p "Digite o número do serviço a ser parado e removido: " service_number
+    read -p "QUE PORTA DESEJA REMOVER?: " service_number
     
     # Parar o serviço
     systemctl stop proxy-$service_number
@@ -136,15 +136,15 @@ fi
 while true; do
     clear
     echo -e "\E[41;1;37m       🚀   PROXY DTUNNEL MOD  🚀           \E[0m"
-	echo ""
+    echo ""
     echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m1\033[1;31m] \033[1;37m• \033[1;33mINSTALAR DTUNNELPROXY MOD \033[0m"
-    echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m2\033[1;31m] \033[1;37m• \033[1;33mPARAR OU REMOVER SERVICO \033[0m"
+    echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m2\033[1;31m] \033[1;37m• \033[1;33mPARAR OU REMOVER PORTA \033[0m"
     echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m3\033[1;31m] \033[1;37m• \033[1;33mREINICIAR PROXY \033[0m"
     echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m4\033[1;31m] \033[1;37m• \033[1;33mVER STATUS DO PROXY \033[0m"
     echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m5\033[1;31m] \033[1;37m• \033[1;33mREINSTALAR PROXY \033[0m"
-    echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m6\033[1;31m] \033[1;37m• \033[1;33mSAIR [0m"
+    echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m6\033[1;31m] \033[1;37m• \033[1;33mSAIR
     echo ""
-    echo -ne "\033[1;32mOQUE DESEJA FAZER \033[1;33m?\033[1;37m "
+    echo -ne "\033[1;32mOQUE DESEJA FAZER? \033[1;33m?\033[1;37m "
     
     read -p "Escolha uma opção: " choice
     
@@ -158,7 +158,7 @@ while true; do
         3)
             echo "Serviços em execução:"
             systemctl list-units --type=service --state=running | grep proxy-
-            read -p "Digite o número do serviço a ser reiniciado: " service_number
+            read -p "DIGITE NUMERO DA PORTA: " service_number
             systemctl restart proxy-$service_number
             echo "Serviço proxy-$service_number reiniciado."
         ;;
@@ -171,7 +171,7 @@ while true; do
             install_proxy
         ;;
         6)
-            echo "Saindo."
+            echo "Saindo..."
             break
         ;;
         *)
