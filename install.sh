@@ -48,12 +48,12 @@ uninstall_proxy() {
 # Configurar e iniciar o serviço
 configure_and_start_service() {
     read -p "Digite a porta a ser usada (--port): " PORT
-    read -p "Você quer usar HTTP (H) ou HTTPS (S) [H/S]?: " HTTP_OR_HTTPS
+    read -p "Você quer usar HTTP (H) ou HTTPS (S)? [H/S]: " HTTP_OR_HTTPS
     if [[ $HTTP_OR_HTTPS == "S" || $HTTP_OR_HTTPS == "s" ]]; then
         read -p "Digite o caminho do certificado (--cert): " CERT_PATH
     fi
     read -p "Digite Status do Proxy HTTP (--response): " RESPONSE
-    read -p "Você quer usar apenas SSH (Y/N)?: " SSH_ONLY
+    read -p "Você quer usar apenas SSH (Y/N)? [Y/N]: " SSH_ONLY
     
     # Defina as opções de comando
     OPTIONS="--port $PORT"
@@ -97,7 +97,7 @@ configure_and_start_service() {
 }
 
 stop_and_remove_service() {
-    read -p "QUE PORTA DESEJA REMOVER?: " service_number
+    read -p "Que porta deseja remover?: " service_number
     
     # Parar o serviço
     systemctl stop proxy-$service_number
@@ -158,7 +158,7 @@ while true; do
         3)
             echo "Serviços em execução:"
             systemctl list-units --type=service --state=running | grep proxy-
-            read -p "DIGITE NUMERO DA PORTA: " service_number
+            read -p "Digite o número da porta a ser reiniciada: " service_number
             systemctl restart proxy-$service_number
             echo "Serviço proxy-$service_number reiniciado."
         ;;
