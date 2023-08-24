@@ -52,7 +52,7 @@ configure_and_start_service() {
     if [[ $HTTP_OR_HTTPS == "S" || $HTTP_OR_HTTPS == "s" ]]; then
         read -p "Digite o caminho do certificado (--cert): " CERT_PATH
     fi
-    read -p "Digite Status do Proxy HTTP (--response): " RESPONSE
+    read -p "Digite o conteúdo da resposta HTTP (--response): " RESPONSE
     read -p "Você quer usar apenas SSH (Y/N)? [Y/N]: " SSH_ONLY
     
     # Defina as opções de comando
@@ -114,7 +114,7 @@ stop_and_remove_service() {
         echo "Arquivo de serviço não encontrado para o serviço proxy-$service_number."
     fi
     
-    echo "Serviço proxy-$service_number parado e removido."
+   echo "Serviço proxy-$service_number parado e removido."
 }
 
 # Criar link simbólico para o script do menu
@@ -158,7 +158,7 @@ while true; do
         3)
             echo "Serviços em execução:"
             systemctl list-units --type=service --state=running | grep proxy-
-            read -p "Digite o número da porta a ser reiniciada: " service_number
+            read -p "Digite o número do serviço a ser reiniciado: " service_number
             systemctl restart proxy-$service_number
             echo "Serviço proxy-$service_number reiniciado."
         ;;
@@ -171,7 +171,7 @@ while true; do
             install_proxy
         ;;
         6)
-            echo "Saindo..."
+            echo "Saindo."
             break
         ;;
         *)
