@@ -136,7 +136,7 @@ fi
 while true; do
     clear
     echo -e "\E[41;1;37m       🚀   PROXY DTUNNEL MOD  🚀           \E[0m"
-    echo ""
+              echo ""
     echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m1\033[1;31m] \033[1;37m• \033[1;33mINSTALAR DTUNNELPROXY MOD \033[0m"
     echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m2\033[1;31m] \033[1;37m• \033[1;33mPARAR OU REMOVER PORTA \033[0m"
     echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m3\033[1;31m] \033[1;37m• \033[1;33mREINICIAR PROXY \033[0m"
@@ -144,7 +144,7 @@ while true; do
     echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m5\033[1;31m] \033[1;37m• \033[1;33mREINSTALAR PROXY \033[0m"
     echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m6\033[1;31m] \033[1;37m• \033[1;33mSAIR \033[0m"
     echo ""
-    echo -ne "\033[1;32mO QUE DESEJA FAZER? \033[1;33m?\033[1;37m"
+    echo -ne "\033[1;32mO QUE DESEJA FAZER\033[1;33m?\033[1;37m"
     
     read -p "Escolha uma opção: " choice
     
