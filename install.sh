@@ -146,8 +146,6 @@ while true; do
     echo ""
     echo -ne "\033[1;32mO QUE DESEJA FAZER?\033[1;33m?\033[1;37m"
     
-    read -p "Escolha uma opção: " choice
-    
     case $choice in
         1)
             configure_and_start_service
