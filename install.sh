@@ -48,12 +48,12 @@ uninstall_proxy() {
 # Configurar e iniciar o serviço
 configure_and_start_service() {
     read -p "Digite a porta a ser usada (--port): " PORT
-    read -p "Você quer usar HTTP (H) ou HTTPS (S)?: " HTTP_OR_HTTPS
+    read -p "Você quer usar HTTP (H) ou HTTPS (S)? [H/S]: " HTTP_OR_HTTPS
     if [[ $HTTP_OR_HTTPS == "S" || $HTTP_OR_HTTPS == "s" ]]; then
         read -p "Digite o caminho do certificado (--cert): " CERT_PATH
     fi
-    read -p "Digite Status do Proxy HTTP (--response): " RESPONSE
-    read -p "Você quer usar apenas SSH (Y/N)?: " SSH_ONLY
+    read -p "Digite o conteúdo da resposta HTTP (--response): " RESPONSE
+    read -p "Você quer usar apenas SSH (Y/N)? [Y/N]: " SSH_ONLY
     
     # Defina as opções de comando
     OPTIONS="--port $PORT"
