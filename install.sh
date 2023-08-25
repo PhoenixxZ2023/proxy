@@ -145,6 +145,8 @@ while true; do
     echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m6\033[1;31m] \033[1;37m• \033[1;33mSAIR \033[0m"
     echo ""
     echo -ne "\033[1;32mO QUE DESEJA FAZER?\033[1;33m?\033[1;37m"
+
+    read -p ": " choice
     
     case $choice in
         1)
