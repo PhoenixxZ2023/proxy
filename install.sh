@@ -4,7 +4,7 @@
 if [ -f /usr/bin/proxy ]; then
     echo "O proxy já está instalado. Ignorando a instalação."
 else
-    # Função para instalar o proxy
+# Função para instalar o proxy
     install_proxy() {
         echo "Instalando o proxy..."
         {
@@ -15,7 +15,7 @@ else
         echo "Proxy instalado com sucesso."
     }
     
-    # Instalar o proxy
+# Instalar o proxy
     install_proxy
 fi
 
@@ -23,13 +23,13 @@ fi
 uninstall_proxy() {
     echo -e "\nDesinstalando o proxy..."
     
-    # Encontra e remove todos os arquivos de serviço do proxy
+# Encontra e remove todos os arquivos de serviço do proxy
     service_files=$(find /etc/systemd/system -name 'proxy-*.service')
     for service_file in $service_files; do
         service_name=$(basename "$service_file")
         service_name=${service_name%.service}
         
-        # Verifica se o serviço está ativo antes de tentar parar e desabilitar
+ # Verifica se o serviço está ativo antes de tentar parar e desabilitar
         if  systemctl is-active "$service_name" &> /dev/null; then
             systemctl stop "$service_name"
             systemctl disable "$service_name"
@@ -39,23 +39,23 @@ uninstall_proxy() {
         echo "Serviço $service_name parado e arquivo de serviço removido: $service_file"
     done
     
-    # Remove o arquivo binário do proxy
+ # Remove o arquivo binário do proxy
     rm -f /usr/bin/proxy
     
     echo "Proxy desinstalado com sucesso."
 }
 
 # Configurar e iniciar o serviço
-configure_and_start_service() {
-    read -p "QUE PORTA DESEJA ATIVAR? (--port): " PORT
-    read -p "Você quer usar HTTP (H) ou HTTPS (S)?: " HTTP_OR_HTTPS
+    configure_and_start_service() {
+    read -p "QUE PORTA DESEJA ATIVAR? : " PORT
+    read -p "Você quer usar HTTP(H) ou HTTPS(S)?: " HTTP_OR_HTTPS
     if [[ $HTTP_OR_HTTPS == "S" || $HTTP_OR_HTTPS == "s" ]]; then
-        read -p "Digite o caminho do certificado (--cert): " CERT_PATH
+    read -p "Digite o caminho do certificado (--cert): " CERT_PATH
     fi
-    read -p "Digite o conteúdo da resposta HTTP (--response): " RESPONSE
+    read -p "DIGITE STATUS DO PROXY: " RESPONSE
     read -p "Você quer usar apenas SSH (Y/N)?: " SSH_ONLY
     
-    # Defina as opções de comando
+# Defina as opções de comando
     OPTIONS="--port $PORT"
     
     if [[ $HTTP_OR_HTTPS == "S" || $HTTP_OR_HTTPS == "s" ]]; then
@@ -68,28 +68,29 @@ configure_and_start_service() {
         OPTIONS="$OPTIONS --ssh-only"
     fi
     
-    # Crie o arquivo de serviço
+ # Crie o arquivo de serviço
     SERVICE_FILE="/etc/systemd/system/proxy-$PORT.service"
     echo "[Unit]" > "$SERVICE_FILE"
-    echo "Description=Proxy Service on Port $PORT" >> "$SERVICE_FILE"
+    echo "Description=PROXY ATIVO NA PORTA $PORT" >> "$SERVICE_FILE"
     echo "After=network.target" >> "$SERVICE_FILE"
     echo "" >> "$SERVICE_FILE"
     echo "[Service]" >> "$SERVICE_FILE"
     echo "Type=simple" >> "$SERVICE_FILE"
     echo "User=root" >> "$SERVICE_FILE"
     echo "WorkingDirectory=/root" >> "$SERVICE_FILE"
-    echo "ExecStart=/usr/bin/proxy $OPTIONS --buffer-size 2048 --workers 5000 --response $RESPONSE" >> "$SERVICE_FILE" # Parâmetro --response no final
+    echo "ExecStart=/usr/bin/proxy $OPTIONS --buffer-size 2048 --workers 5000 --response $RESPONSE" >> "$SERVICE_FILE" 
+    
+# Parâmetro --response no final
     echo "Restart=always" >> "$SERVICE_FILE"
     echo "" >> "$SERVICE_FILE"
     echo "[Install]" >> "$SERVICE_FILE"
     echo "WantedBy=multi-user.target" >> "$SERVICE_FILE"
     
     
-    
-    # Recarregue o systemd
+ # Recarregue o systemd
     systemctl daemon-reload
     
-    # Inicie o serviço e configure o início automático
+# Inicie o serviço e configure o início automático
     systemctl start proxy-$PORT
     systemctl enable proxy-$PORT
     
@@ -99,22 +100,22 @@ configure_and_start_service() {
 stop_and_remove_service() {
     read -p "QUE PORTA DESEJA PARAR?: " service_number
     
-    # Parar o serviço
+ # Parar o serviço
     systemctl stop proxy-$service_number
     
-    # Desabilitar o serviço
+# Desabilitar o serviço
     systemctl disable proxy-$service_number
     
-    # Encontrar e remover o arquivo do serviço
+# Encontrar e remover o arquivo do serviço
     service_file=$(find /etc/systemd/system -name "proxy-$service_number.service")
     if [ -f "$service_file" ]; then
         rm "$service_file"
-        echo "Arquivo de serviço removido: $service_file"
+        echo "PORTA REMOVIDA COM SUCESSO: $service_file"
     else
         echo "Arquivo de serviço não encontrado para o serviço proxy-$service_number."
     fi
     
-    echo "Serviço proxy-$service_number parado e removido."
+    echo "PORTA PROXY-$service_number parado e removido."
 }
 
 # Criar link simbólico para o script do menu
@@ -158,7 +159,7 @@ while true; do
         3)
             echo "Serviços em execução:"
             systemctl list-units --type=service --state=running | grep proxy-
-            read -p "DIGITE A PORTA PARA SER REINICIADA?: " service_number
+            read -p "QUAL PORTA DESEJA REINICIAR?: " service_number
             systemctl restart proxy-$service_number
             echo "Serviço proxy-$service_number reiniciado."
         ;;
