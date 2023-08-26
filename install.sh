@@ -136,9 +136,9 @@ fi
 # Menu de gerenciamento
 while true; do
     clear
-    echo -e "\E[41;1;37m       🚀   PROXY DTUNNEL MOD  🚀           \E[0m"
+    echo -e "\E[41;1;37m       🚀   PROXY TURBONET MOD  🚀           \E[0m"
               echo ""
-    echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m1\033[1;31m] \033[1;37m• \033[1;33mINSTALAR DTUNNELPROXY MOD \033[0m"
+    echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m1\033[1;31m] \033[1;37m• \033[1;33mINSTALAR TURBONET PROXY MOD \033[0m"
     echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m2\033[1;31m] \033[1;37m• \033[1;33mPARAR OU REMOVER PORTA \033[0m"
     echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m3\033[1;31m] \033[1;37m• \033[1;33mREINICIAR PROXY \033[0m"
     echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m4\033[1;31m] \033[1;37m• \033[1;33mVER STATUS DO PROXY \033[0m"
