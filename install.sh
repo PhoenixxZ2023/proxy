@@ -71,7 +71,7 @@ uninstall_proxy() {
  # Crie o arquivo de serviço
     SERVICE_FILE="/etc/systemd/system/proxy-$PORT.service"
     echo "[Unit]" > "$SERVICE_FILE"
-    echo "PROXY ATIVO NA PORTA $PORT" >> "$SERVICE_FILE"
+    echo "Description=PROXY ATIVO NA PORTA $PORT" >> "$SERVICE_FILE"
     echo "After=network.target" >> "$SERVICE_FILE"
     echo "" >> "$SERVICE_FILE"
     echo "[Service]" >> "$SERVICE_FILE"
