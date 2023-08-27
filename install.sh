@@ -86,8 +86,7 @@ uninstall_proxy() {
     echo "[Install]" >> "$SERVICE_FILE"
     echo "WantedBy=multi-user.target" >> "$SERVICE_FILE"
     
-    
- # Recarregue o systemd
+# Recarregue o systemd
     systemctl daemon-reload
     
 # Inicie o serviço e configure o início automático
@@ -145,38 +144,36 @@ while true; do
     echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m5\033[1;31m] \033[1;37m• \033[1;33mREINSTALAR PROXY \033[0m"
     echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m6\033[1;31m] \033[1;37m• \033[1;33mSAIR \033[0m"
     echo ""
-    echo -ne "\033[1;32mO QUE DESEJA FAZER?\033[1;33m?\033[1;37m"
-
+    echo -ne "\033[1;31m➤ \033[1;32mESCOLHA OPÇÃO DESEJADA\033[1;33m\033[1;31m\033[1;37m : "
     read -p ": " choice
-    
     case $choice in
-        1)
-            configure_and_start_service
+    1 | 01)
+        configure_and_start_service
         ;;
-        2)
-            stop_and_remove_service
+    2 | 02)
+        stop_and_remove_service
         ;;
-        3)
-            echo "Serviços em execução:"
-            systemctl list-units --type=service --state=running | grep proxy-
-            read -p "QUAL PORTA DESEJA REINICIAR?: " service_number
-            systemctl restart proxy-$service_number
-            echo "Serviço proxy-$service_number reiniciado."
+    3 | 03)
+        echo "Serviços em execução:"
+        systemctl list-units --type=service --state=running | grep proxy-
+        read -p "QUAL PORTA DESEJA REINICIAR?: " service_number
+        systemctl restart proxy-$service_number
+        echo "Serviço proxy-$service_number reiniciado."
         ;;
-        4)
-            systemctl list-units --type=service --state=running | grep proxy-
+    4 | 04)
+        systemctl list-units --type=service --state=running | grep proxy-
         ;;
-        5)
-            echo "Desinstalando o proxy antes de reinstalar..."
-            uninstall_proxy
-            install_proxy
+    5 | 05)
+        echo "Desinstalando o proxy antes de reinstalar..."
+        uninstall_proxy
+        install_proxy
         ;;
-        6)
-            echo "Saindo."
-            break
+    6 | 06)
+        echo "Saindo."
+        break
         ;;
         *)
-            echo "Opção inválida. Escolha uma opção válida."
+        echo "Opção inválida. Escolha uma opção válida."
         ;;
     esac
     
