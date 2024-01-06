@@ -174,7 +174,7 @@ while true; do
         ;;
     6 | 06)
         echo "Saindo."
-        menu
+        break
         ;;
         *)
         echo "Opção inválida. Escolha uma opção válida."
