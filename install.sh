@@ -1,179 +1,184 @@
 #!/bin/bash
 
-# Function to install the proxy
-install_proxy() {
-    echo "Installing the proxy..."
+# Função para instalar o proxy
+instalar_proxy() {
+    echo "Instalando o proxy..."
     {
         rm -f /usr/bin/proxy
         curl -s -L -o /usr/bin/proxy https://raw.githubusercontent.com/PhoenixxZ2023/proxy/main/proxy
         chmod +x /usr/bin/proxy
     } > /dev/null 2>&1
-    echo "Proxy installed successfully."
+    echo "Proxy instalado com sucesso."
 }
 
-# Function to uninstall the proxy
-uninstall_proxy() {
-    echo -e "\nUninstalling the proxy..."
+# Função para desinstalar o proxy
+desinstalar_proxy() {
+    echo -e "\nDesinstalando o proxy..."
 
-    # Find and remove all proxy service files
-    service_files=$(find /etc/systemd/system -name 'proxy-*.service')
-    for service_file in $service_files; do
-        service_name=$(basename "$service_file")
-        service_name=${service_name%.service}
+    # Encontrar e remover todos os arquivos de serviço do proxy
+    arquivos_servico=$(find /etc/systemd/system -name 'proxy-*.service')
+    for arquivo_servico in $arquivos_servico; do
+        nome_servico=$(basename "$arquivo_servico")
+        nome_servico=${nome_servico%.service}
 
-        # Check if the service is active before stopping and disabling
-        if systemctl is-active "$service_name" &> /dev/null; then
-            systemctl stop "$service_name"
-            systemctl disable "$service_name"
+        # Verificar se o serviço está ativo antes de parar e desabilitar
+        if systemctl is-active "$nome_servico" &> /dev/null; then
+            systemctl stop "$nome_servico"
+            systemctl disable "$nome_servico"
         fi
 
-        rm -f "$service_file"
-        echo "Service $service_name stopped, and service file removed: $service_file"
+        rm -f "$arquivo_servico"
+        echo "Serviço $nome_servico parado, e arquivo de serviço removido: $arquivo_servico"
     done
 
-    # Remove the proxy binary file
+    # Remover o arquivo binário do proxy
     rm -f /usr/bin/proxy
 
-    echo "Proxy uninstalled successfully."
+    echo "Proxy desinstalado com sucesso."
 }
 
-# Function to configure and start the service
-configure_and_start_service() {
-    read -p "Enter the port to activate: " PORT
-    read -p "Do you want to use HTTP(H) or HTTPS(S)?: " HTTP_OR_HTTPS
+# Função para configurar e iniciar o serviço
+configurar_e_iniciar_servico() {
+    echo -e "\nConfigurando e iniciando o serviço de proxy..."
 
-    if [[ $HTTP_OR_HTTPS == "S" || $HTTP_OR_HTTPS == "s" ]]; then
-        read -p "Enter the certificate path (--cert): " CERT_PATH
+    read -p "Digite a porta para ativar: " PORTA
+    read -p "Deseja usar HTTP(H) ou HTTPS(S)?: " HTTP_OU_HTTPS
+
+    if [[ $HTTP_OU_HTTPS == "S" || $HTTP_OU_HTTPS == "s" ]]; then
+        read -p "Digite o caminho do certificado (--cert): " CAMINHO_CERTIFICADO
     fi
 
-    read -p "Enter the proxy status: " RESPONSE
-    read -p "Do you want to use only SSH (Y/N)?: " SSH_ONLY
+    read -p "Digite o status do proxy: " RESPOSTA
+    read -p "Deseja usar apenas SSH (S/N)?: " SOMENTE_SSH
 
-    # Set command options
-    OPTIONS="--port $PORT"
+    # Definir opções de comando
+    OPCOES="--porta $PORTA"
 
-    if [[ $HTTP_OR_HTTPS == "S" || $HTTP_OR_HTTPS == "s" ]]; then
-        OPTIONS="$OPTIONS --https --cert $CERT_PATH"
+    if [[ $HTTP_OU_HTTPS == "S" || $HTTP_OU_HTTPS == "s" ]]; then
+        read -p "Digite o tamanho do buffer: " TAMANHO_BUFFER
+        read -p "Digite o número de trabalhadores: " TRABALHADORES
+        OPCOES="$OPCOES --https --cert $CAMINHO_CERTIFICADO --tamanho-buffer $TAMANHO_BUFFER --trabalhadores $TRABALHADORES"
     else
-        OPTIONS="$OPTIONS --http"
+        OPCOES="$OPCOES --http"
     fi
 
-    if [[ $SSH_ONLY == "Y" || $SSH_ONLY == "y" ]]; then
-        OPTIONS="$OPTIONS --ssh-only"
+    if [[ $SOMENTE_SSH == "S" || $SOMENTE_SSH == "s" ]]; then
+        OPCOES="$OPCOES --somente-ssh"
     fi
 
-    # Create the service file
-    SERVICE_FILE="/etc/systemd/system/proxy-$PORT.service"
-    cat <<EOF > "$SERVICE_FILE"
+    # Criar o arquivo de serviço
+    ARQUIVO_SERVICO="/etc/systemd/system/proxy-$PORTA.service"
+    cat <<EOF > "$ARQUIVO_SERVICO"
 [Unit]
-Description=Proxy Active on Port $PORT
-After=network.target
+Descrição=Proxy Ativo na Porta $PORTA
+Depois=network.target
 
 [Service]
-Type=simple
-User=root
-WorkingDirectory=/root
-ExecStart=/usr/bin/proxy $OPTIONS --buffer-size $BUFFER_SIZE --workers $WORKERS --response $RESPONSE
-Restart=always
+Tipo=simples
+Usuário=root
+DiretorioDeTrabalho=/root
+ExecStart=/usr/bin/proxy $OPCOES --resposta $RESPOSTA
+Reiniciar=sempre
 
 [Install]
-WantedBy=multi-user.target
+QueridoPor=multi-user.target
 EOF
 
-    # Reload systemd
+    # Recarregar o systemd
     systemctl daemon-reload
 
-    # Start the service and configure automatic start
-    systemctl start proxy-$PORT
-    systemctl enable proxy-$PORT
+    # Iniciar o serviço e configurar a inicialização automática
+    systemctl start "proxy-$PORTA"
+    systemctl enable "proxy-$PORTA"
 
-    echo "Proxy service on port $PORT has been configured and started automatically."
+    echo "Serviço de proxy na porta $PORTA configurado e iniciado automaticamente."
 }
 
-# Function to stop and remove the service
-stop_and_remove_service() {
-    read -p "Enter the port to stop: " service_number
+# Função para parar e remover o serviço
+parar_e_remover_servico() {
+    echo -e "\nParando e removendo o serviço de proxy..."
 
-    # Stop the service
-    systemctl stop proxy-$service_number
+    read -p "Digite a porta para parar: " NUMERO_SERVICO
 
-    # Disable the service
-    systemctl disable proxy-$service_number
+    # Parar o serviço
+    systemctl stop "proxy-$NUMERO_SERVICO"
 
-    # Find and remove the service file
-    service_file=$(find /etc/systemd/system -name "proxy-$service_number.service")
-    if [ -f "$service_file" ]; then
-        rm "$service_file"
-        echo "Port removed successfully: $service_file"
+    # Desabilitar o serviço
+    systemctl disable "proxy-$NUMERO_SERVICO"
+
+    # Encontrar e remover o arquivo de serviço
+    arquivo_servico=$(find /etc/systemd/system -name "proxy-$NUMERO_SERVICO.service")
+    if [ -f "$arquivo_servico" ]; then
+        rm "$arquivo_servico"
+        echo "Porta removida com sucesso: $arquivo_servico"
     else
-        echo "Service file not found for proxy-$service_number service."
+        echo "Arquivo de serviço não encontrado para o serviço proxy-$NUMERO_SERVICO."
     fi
 
-    echo "Proxy-$service_number port stopped and removed."
+    echo "Porta proxy-$NUMERO_SERVICO parada e removida."
 }
 
-# Function to create a symbolic link to the menu script
-create_symbolic_link() {
-    SCRIPT_PATH=$(realpath "$0")
-    SCRIPT_DIR=$(dirname "$SCRIPT_PATH")
-    LINK_NAME="/usr/local/bin/mainproxy"
+# Função para criar um link simbólico para o script de menu
+criar_link_simbolico() {
+    CAMINHO_SCRIPT=$(realpath "$0")
+    NOME_LINK="/usr/local/bin/mainproxy"
 
-    if [[ ! -f "$LINK_NAME" ]]; then
-        ln -s "$SCRIPT_PATH" "$LINK_NAME"
-        echo "Symbolic link 'mainproxy' created. You can run the menu using 'mainproxy'."
+    if [[ ! -f "$NOME_LINK" ]]; then
+        ln -s "$CAMINHO_SCRIPT" "$NOME_LINK"
+        echo "Link simbólico 'mainproxy' criado. Você pode executar o menu usando 'mainproxy'."
     else
-        echo "Symbolic link 'mainproxy' already exists."
+        echo "Link simbólico 'mainproxy' já existe."
     fi
 }
 
-# Function to print the header
-print_header() {
+# Função para imprimir o cabeçalho
+imprimir_cabecalho() {
     echo -e "\n\e[1;94m=======================================\e[0m"
-    echo -e "\e[1;94m         TURBONET PROXY MOD MENU       \e[0m"
+    echo -e "\e[1;94m         MENU DO TURBONET PROXY MOD       \e[0m"
     echo -e "\e[1;94m=======================================\e[0m"
 }
 
-# Management Menu
+# Menu de Gerenciamento
 while true; do
     clear
-    print_header
-    echo -e "\033[1;31m║\033[0m\033[1;31m[\033[1;36m1\033[1;31m] \033[1;37m• \033[1;33mInstall TURBONET PROXY MOD \033[0m"
-    echo -e "\033[1;31m║\033[0m\033[1;31m[\033[1;36m2\033[1;31m] \033[1;37m• \033[1;33mStop and Remove Port \033[0m"
-    echo -e "\033[1;31m║\033[0m\033[1;31m[\033[1;36m3\033[1;31m] \033[1;37m• \033[1;33mRestart Proxy \033[0m"
-    echo -e "\033[1;31m║\033[0m\033[1;31m[\033[1;36m4\033[1;31m] \033[1;37m• \033[1;33mView Proxy Status \033[0m"
-    echo -e "\033[1;31m║\033[0m\033[1;31m[\033[1;36m5\033[1;31m] \033[1;37m• \033[1;33mReinstall Proxy \033[0m"
-    echo -e "\033[1;31m║\033[0m\033[1;31m[\033[1;36m6\033[1;31m] \033[1;37m• \033[1;33mExit \033[0m"
+    imprimir_cabecalho
+    echo -e "\033[1;31m║\033[0m\033[1;31m[\033[1;36m1\033[1;31m] \033[1;37m• \033[1;33mInstalar o TURBONET PROXY MOD \033[0m"
+    echo -e "\033[1;31m║\033[0m\033[1;31m[\033[1;36m2\033[1;31m] \033[1;37m• \033[1;33mParar e Remover Porta \033[0m"
+    echo -e "\033[1;31m║\033[0m\033[1;31m[\033[1;36m3\033[1;31m] \033[1;37m• \033[1;33mReiniciar o Proxy \033[0m"
+    echo -e "\033[1;31m║\033[0m\033[1;31m[\033[1;36m4\033[1;31m] \033[1;37m• \033[1;33mVer Status do Proxy \033[0m"
+    echo -e "\033[1;31m║\033[0m\033[1;31m[\033[1;36m5\033[1;31m] \033[1;37m• \033[1;33mReinstalar o Proxy \033[0m"
+    echo -e "\033[1;31m║\033[0m\033[1;31m[\033[1;36m6\033[1;31m] \033[1;37m• \033[1;33mSair \033[0m"
     echo -e "\033[1;31m=======================================\e[0m"
     echo ""
-    echo -ne "\033[1;31m➤ \033[1;32mChoose desired option\033[1;33m\033[1;31m\033[1;37m: "
-    read -p "" choice
+    echo -ne "\033[1;31m➤ \033[1;32mEscolha a opção desejada\033[1;33m\033[1;31m\033[1;37m: "
+    read -p "" escolha
 
-    case $choice in
-        1 | 01) configure_and_start_service ;;
-        2 | 02) stop_and_remove_service ;;
+    case $escolha in
+        1 | 01) instalar_proxy ;;
+        2 | 02) parar_e_remover_servico ;;
         3 | 03)
-            echo "Running services:"
+            echo "Serviços em execução:"
             systemctl list-units --type=service --state=running | grep proxy-
-            read -p "Enter the port to restart: " service_number
-            systemctl restart proxy-$service_number
-            echo "Proxy-$service_number service restarted."
+            read -p "Digite a porta para reiniciar: " numero_servico
+            systemctl restart "proxy-$numero_servico"
+            echo "Serviço Proxy-$numero_servico reiniciado."
             ;;
         4 | 04)
             systemctl list-units --type=service --state=running | grep proxy-
             ;;
         5 | 05)
-            echo "Uninstalling the proxy before reinstalling..."
-            uninstall_proxy
-            install_proxy
+            echo "Desinstalando o proxy antes de reinstalar..."
+            desinstalar_proxy
+            instalar_proxy
             ;;
         6 | 06)
-            echo "Exiting."
+            echo "Saindo."
             exit
             ;;
         *)
-            echo "Invalid option. Choose a valid option."
+            echo "Opção inválida. Escolha uma opção válida."
             ;;
     esac
 
-    read -p "Press Enter to continue..."
+    read -p "Pressione Enter para continuar..."
 done
