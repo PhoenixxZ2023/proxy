@@ -23,13 +23,13 @@ fi
 uninstall_proxy() {
     echo -e "\nDesinstalando o proxy..."
     
-# Encontra e remove todos os arquivos de serviço do proxy
+    # Encontra e remove todos os arquivos de serviço do proxy
     service_files=$(find /etc/systemd/system -name 'proxy-*.service')
     for service_file in $service_files; do
         service_name=$(basename "$service_file")
         service_name=${service_name%.service}
         
- # Verifica se o serviço está ativo antes de tentar parar e desabilitar
+        # Verifica se o serviço está ativo antes de tentar parar e desabilitar
         if  systemctl is-active "$service_name" &> /dev/null; then
             systemctl stop "$service_name"
             systemctl disable "$service_name"
@@ -39,23 +39,28 @@ uninstall_proxy() {
         echo "Serviço $service_name parado e arquivo de serviço removido: $service_file"
     done
     
- # Remove o arquivo binário do proxy
+    # Remove o arquivo binário do proxy
     rm -f /usr/bin/proxy
     
     echo "Proxy desinstalado com sucesso."
 }
 
 # Configurar e iniciar o serviço
-    configure_and_start_service() {
-    read -p "QUE PORTA DESEJA ATIVAR? : " PORT
-    read -p "Você quer usar HTTP(H) ou HTTPS(S)?: " HTTP_OR_HTTPS
-    if [[ $HTTP_OR_HTTPS == "S" || $HTTP_OR_HTTPS == "s" ]]; then
-    read -p "Digite o caminho do certificado (--cert): " CERT_PATH
-    fi
-    read -p "DIGITE STATUS DO PROXY: " RESPONSE
-    read -p "Você quer usar apenas SSH (Y/N)?: " SSH_ONLY
+configure_and_start_service() {
+    read -p "Digite a porta a ser usada (--port): " PORT
+    read -p "Você quer usar HTTP (H) ou HTTPS (S)? [H/S]: " HTTP_OR_HTTPS
+    CERT_PATH="/root/cert.pem"  # Caminho padrão para o certificado
+    RESPONSE=""
     
-# Defina as opções de comando
+    if [[ $HTTP_OR_HTTPS == "H" || $HTTP_OR_HTTPS == "h" ]]; then
+        read -p "Digite o conteúdo da resposta HTTP (--response): " RESPONSE
+    fi
+    
+    read -p "Você quer usar apenas SSH (Y/N)? [Y/N]: " SSH_ONLY
+    read -p "Digite o tamanho do buffer (--buffer-size): " BUFFER_SIZE
+    read -p "Digite o número de workers (--workers): " WORKERS
+    
+    # Defina as opções de comando
     OPTIONS="--port $PORT"
     
     if [[ $HTTP_OR_HTTPS == "S" || $HTTP_OR_HTTPS == "s" ]]; then
@@ -68,10 +73,10 @@ uninstall_proxy() {
         OPTIONS="$OPTIONS --ssh-only"
     fi
     
- # Crie o arquivo de serviço
+    # Crie o arquivo de serviço
     SERVICE_FILE="/etc/systemd/system/proxy-$PORT.service"
     echo "[Unit]" > "$SERVICE_FILE"
-    echo "Description=PROXY ATIVO NA PORTA $PORT" >> "$SERVICE_FILE"
+    echo "Description=Proxy Service on Port $PORT" >> "$SERVICE_FILE"
     echo "After=network.target" >> "$SERVICE_FILE"
     echo "" >> "$SERVICE_FILE"
     echo "[Service]" >> "$SERVICE_FILE"
@@ -84,41 +89,36 @@ uninstall_proxy() {
     echo "[Install]" >> "$SERVICE_FILE"
     echo "WantedBy=multi-user.target" >> "$SERVICE_FILE"
     
-# Parâmetro --response no final
-    echo "Restart=always" >> "$SERVICE_FILE"
-    echo "" >> "$SERVICE_FILE"
-    echo "[Install]" >> "$SERVICE_FILE"
-    echo "WantedBy=multi-user.target" >> "$SERVICE_FILE"
-    
-# Recarregue o systemd
+    # Recarregue o systemd
     systemctl daemon-reload
     
-# Inicie o serviço e configure o início automático
+    # Inicie o serviço e configure o início automático
     systemctl start proxy-$PORT
     systemctl enable proxy-$PORT
     
     echo "O serviço do proxy na porta $PORT foi configurado e iniciado automaticamente."
 }
 
+
 stop_and_remove_service() {
-    read -p "QUE PORTA DESEJA PARAR?: " service_number
+    read -p "Digite o número do serviço a ser parado e removido: " service_number
     
- # Parar o serviço
+    # Parar o serviço
     systemctl stop proxy-$service_number
     
-# Desabilitar o serviço
+    # Desabilitar o serviço
     systemctl disable proxy-$service_number
     
-# Encontrar e remover o arquivo do serviço
+    # Encontrar e remover o arquivo do serviço
     service_file=$(find /etc/systemd/system -name "proxy-$service_number.service")
     if [ -f "$service_file" ]; then
         rm "$service_file"
-        echo "PORTA REMOVIDA COM SUCESSO: $service_file"
+        echo "Arquivo de serviço removido: $service_file"
     else
         echo "Arquivo de serviço não encontrado para o serviço proxy-$service_number."
     fi
     
-    echo "PORTA PROXY-$service_number parado e removido."
+    echo "Serviço proxy-$service_number parado e removido."
 }
 
 # Criar link simbólico para o script do menu
@@ -134,8 +134,6 @@ else
 fi
 
 
-
-
 # Menu de gerenciamento
 while true; do
     clear
@@ -149,35 +147,40 @@ while true; do
     echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m6\033[1;31m] \033[1;37m• \033[1;33mSAIR \033[0m"
     echo ""
     echo -ne "\033[1;31m➤ \033[1;32mESCOLHA OPÇÃO DESEJADA\033[1;33m\033[1;31m\033[1;37m"
-    read -p ": " choice
+    
+    read -p "Escolha uma opção: " choice
+    
     case $choice in
-    1 | 01)
-        configure_and_start_service
+        1)
+            configure_and_start_service
         ;;
-    2 | 02)
-        stop_and_remove_service
+        2)
+            stop_and_remove_service
         ;;
-    3 | 03)
-        echo "Serviços em execução:"
-        systemctl list-units --type=service --state=running | grep proxy-
-        read -p "QUAL PORTA DESEJA REINICIAR?: " service_number
-        systemctl restart proxy-$service_number
-        echo "Serviço proxy-$service_number reiniciado."
+        3)
+            echo "Serviços em execução:"
+            systemctl list-units --type=service --state=running | grep proxy-
+            read -p "Digite o número do serviço a ser reiniciado: " service_number
+            systemctl restart proxy-$service_number
+            echo "Serviço proxy-$service_number reiniciado."
         ;;
-    4 | 04)
-        systemctl list-units --type=service --state=running | grep proxy-
+        4)
+            systemctl list-units --type=service --state=running | grep proxy-
         ;;
-    5 | 05)
-        echo "Desinstalando o proxy antes de reinstalar..."
-        uninstall_proxy
-        install_proxy
+        5)
+            echo "Desinstalando o proxy antes de reinstalar..."
+            uninstall_proxy
+            install_proxy
         ;;
-    6 | 06)
-        echo "Saindo."
-        menu
+        6)
+            uninstall_proxy
+        ;;
+        7)
+            echo "Saindo."
+            break
         ;;
         *)
-        echo "Opção inválida. Escolha uma opção válida."
+            echo "Opção inválida. Escolha uma opção válida."
         ;;
     esac
     
