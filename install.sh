@@ -57,9 +57,7 @@ configure_and_start_service() {
     fi
     
     read -p "Você quer usar apenas SSH (Y/N)? [Y/N]: " SSH_ONLY
-    read -p "Digite o tamanho do buffer (--buffer-size): " BUFFER_SIZE
-    read -p "Digite o número de workers (--workers): " WORKERS
-    
+
     # Defina as opções de comando
     OPTIONS="--port $PORT"
     
