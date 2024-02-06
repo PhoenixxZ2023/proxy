@@ -144,11 +144,10 @@ while true; do
     echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m3\033[1;31m] \033[1;37m• \033[1;33mREINICIAR PROXY \033[0m"
     echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m4\033[1;31m] \033[1;37m• \033[1;33mVER STATUS DO PROXY \033[0m"
     echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m5\033[1;31m] \033[1;37m• \033[1;33mREINSTALAR PROXY \033[0m"
-    echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m6\033[1;31m] \033[1;37m• \033[1;33mSAIR \033[0m"
+    echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m6\033[1;31m] \033[1;37m• \033[1;33MDESINSTALAR PROXY \033[0m"
+    echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m7\033[1;31m] \033[1;37m• \033[1;33mSAIR \033[0m"
     echo ""
-    echo -ne "\033[1;31m➤ \033[1;32mESCOLHA OPÇÃO DESEJADA\033[1;33m\033[1;31m\033[1;37m"
-    
-    read -p "Escolha uma opção: " choice
+    echo -p "\033[1;31m➤ \033[1;32mESCOLHA OPÇÃO DESEJADA\033[1;33m\033[1;31m\033[1;37m"
     
     case $choice in
         1)
