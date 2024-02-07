@@ -153,7 +153,6 @@ while true; do
 
     show_ports_in_use
     
-    local option
     echo -e "\033[1;34m║\033[1;36m[\033[1;32m01\033[1;36m] \033[1;32m• \033[1;31mABRIR PORTA           \033[1;34m║"
     echo -e "\033[1;34m║\033[1;36m[\033[1;32m02\033[1;36m] \033[1;32m• \033[1;31mFECHAR PORTA          \033[1;34m║"
     echo -e "\033[1;34m║\033[1;36m[\033[1;32m03\033[1;36m] \033[1;32m• \033[1;31mREINICIAR PORTA       \033[1;34m║"
@@ -162,9 +161,9 @@ while true; do
     echo -e "\033[1;34m║\033[1;36m[\033[1;32m06\033[1;36m] \033[1;32m• \033[1;31mDESINSTALAR PROXY     \033[1;34m║"
     echo -e "\033[1;34m║\033[1;36m[\033[1;32m07\033[1;36m] \033[1;32m• \033[1;31mSAIR                  \033[1;34m║"
     echo -e "\033[1;34m╚═════════════════════════════╝\033[0m"
-    read -rp "$(prompt 'Escolha uma opção: ')" option
+    read -p "$(prompt 'Escolha uma opção: ')" option
 
-    case "$option" in
+    case $choice in
         1)
             configure_and_start_service
         ;;
