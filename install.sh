@@ -161,7 +161,8 @@ while true; do
     echo -e "\033[1;34m║\033[1;36m[\033[1;32m06\033[1;36m] \033[1;32m• \033[1;31mDESINSTALAR PROXY     \033[1;34m║"
     echo -e "\033[1;34m║\033[1;36m[\033[1;32m07\033[1;36m] \033[1;32m• \033[1;31mSAIR                  \033[1;34m║"
     echo -e "\033[1;34m╚═════════════════════════════╝\033[0m"
-    read -p "$(prompt 'Escolha uma opção: ')" option
+   
+    read -p "Escolha uma opção: " choice
 
     case $choice in
         1)
