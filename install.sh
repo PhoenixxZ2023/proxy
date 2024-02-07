@@ -47,16 +47,18 @@ uninstall_proxy() {
 
 # Configurar e iniciar o serviço
 configure_and_start_service() {
-    read -p "Digite a porta a ser usada (--port): " PORT
-    read -p "Você quer usar HTTP (H) ou HTTPS (S)? [H/S]: " HTTP_OR_HTTPS
-    CERT_PATH="/root/cert.pem"  # Caminho padrão para o certificado
-    RESPONSE=""
+    read -p "QUE PORTA DESEJA ATIVAR? (--port): " PORT
+    read -p "Você quer usar HTTP(H) ou HTTPS(S)? [H/S]: " HTTP_OR_HTTPS
+    read -p "Digite o caminho do certificado (--cert): " CERT_PATH="/root/cert.pem"
+    fi
     
     if [[ $HTTP_OR_HTTPS == "H" || $HTTP_OR_HTTPS == "h" ]]; then
-        read -p "Digite o conteúdo da resposta HTTP (--response): " RESPONSE
+        read -p "DIGITE STATUS DO PROXY DTUNNEL (--response): " RESPONSE
     fi
     
     read -p "Você quer usar apenas SSH (Y/N)? [Y/N]: " SSH_ONLY
+    read -p "Digite o tamanho do buffer (recomendado 32768) (--buffer-size): " BUFFER_SIZE
+    read -p "Digite o número de workers (recomendado 2500) (--workers): " WORKERS
 
     # Defina as opções de comando
     OPTIONS="--port $PORT"
@@ -99,7 +101,7 @@ configure_and_start_service() {
 
 
 stop_and_remove_service() {
-    read -p "Digite o número do serviço a ser parado e removido: " service_number
+    read -p "QUAL PORTA DESEJA REMOVER: " service_number
     
     # Parar o serviço
     systemctl stop proxy-$service_number
@@ -146,7 +148,6 @@ while true; do
     echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m7\033[1;31m] \033[1;37m• \033[1;33mSAIR \033[0m"
     echo ""
     echo -e "\033[1;31m➤ \033[1;32mESCOLHA OPÇÃO DESEJADA\033[1;33m\033[1;31m\033[1;37m"
-
     read -p ": " choice
     
     case $choice in
