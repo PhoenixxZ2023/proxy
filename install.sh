@@ -45,6 +45,15 @@ uninstall_proxy() {
     echo "Proxy desinstalado com sucesso."
 }
 
+show_ports_in_use() {
+    local ports_in_use=$(systemctl list-units --all --plain --no-legend | grep -oE 'proxy-[0-9]+' | cut -d'-' -f2)
+    if [ -n "$ports_in_use" ]; then
+        ports_in_use=$(echo "$ports_in_use" | tr '\n' ' ')
+        echo -e "\033[1;34m║\033[1;32mEm uso:\033[1;33m $(printf '%-21s' "$ports_in_use")\033[1;34m║\033[0m"
+        echo -e "\033[1;34m║═════════════════════════════║\033[0m"
+    fi
+}
+
 # Configurar e iniciar o serviço
 configure_and_start_service() {
     read -p "QUE PORTA DESEJA ATIVAR? (--port): " PORT
@@ -137,20 +146,25 @@ fi
 # Menu de gerenciamento
 while true; do
     clear
-    echo -e "\E[41;1;37m       🚀   TURBONET PROXY MOD  🚀           \E[0m"
-              echo ""
-    echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m1\033[1;31m] \033[1;37m• \033[1;33mINSTALAR TURBONET PROXY MOD \033[0m"
-    echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m2\033[1;31m] \033[1;37m• \033[1;33mPARAR E REMOVER PORTA \033[0m"
-    echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m3\033[1;31m] \033[1;37m• \033[1;33mREINICIAR PROXY \033[0m"
-    echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m4\033[1;31m] \033[1;37m• \033[1;33mVER STATUS DO PROXY \033[0m"
-    echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m5\033[1;31m] \033[1;37m• \033[1;33mREINSTALAR PROXY \033[0m"
-    echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m6\033[1;31m] \033[1;37m• \033[1;33mDESINSTALAR PROXY \033[0m"
-    echo -e "\033[01;31m║\033[0m\033[1;31m[\033[1;36m7\033[1;31m] \033[1;37m• \033[1;33mSAIR \033[0m"
-    echo ""
-    echo -e "\033[1;31m➤ \033[1;32mESCOLHA OPÇÃO DESEJADA\033[1;33m\033[1;31m\033[1;37m"
-    read -p ": " choice
     
-    case $choice in
+    echo -e "\033[1;34m╔═════════════════════════════╗\033[0m"
+    echo -e "\033[1;34m║\033[1;41m\033[1;32m      DTunnel Proxy Menu     \033[0m\033[1;34m║"
+    echo -e "\033[1;34m║═════════════════════════════║\033[0m"
+
+    show_ports_in_use
+    
+    local option
+    echo -e "\033[1;34m║\033[1;36m[\033[1;32m01\033[1;36m] \033[1;32m• \033[1;31mABRIR PORTA           \033[1;34m║"
+    echo -e "\033[1;34m║\033[1;36m[\033[1;32m02\033[1;36m] \033[1;32m• \033[1;31mFECHAR PORTA          \033[1;34m║"
+    echo -e "\033[1;34m║\033[1;36m[\033[1;32m03\033[1;36m] \033[1;32m• \033[1;31mREINICIAR PORTA       \033[1;34m║"
+    echo -e "\033[1;34m║\033[1;36m[\033[1;32m04\033[1;36m] \033[1;32m• \033[1;31mMONITOR               \033[1;34m║"
+    echo -e "\033[1;34m║\033[1;36m[\033[1;32m05\033[1;36m] \033[1;32m• \033[1;37mREINSTALAR PORTA      \033[1;34m║"
+    echo -e "\033[1;34m║\033[1;36m[\033[1;32m06\033[1;36m] \033[1;32m• \033[1;31mDESINSTALAR PROXY     \033[1;34m║"
+    echo -e "\033[1;34m║\033[1;36m[\033[1;32m07\033[1;36m] \033[1;32m• \033[1;31mSAIR                  \033[1;34m║"
+    echo -e "\033[1;34m╚═════════════════════════════╝\033[0m"
+    read -rp "$(prompt 'Escolha uma opção: ')" option
+
+    case "$option" in
         1)
             configure_and_start_service
         ;;
