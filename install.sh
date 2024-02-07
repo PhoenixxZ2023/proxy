@@ -50,6 +50,7 @@ configure_and_start_service() {
     read -p "QUE PORTA DESEJA ATIVAR? (--port): " PORT
     read -p "Você quer usar HTTP(H) ou HTTPS(S)? [H/S]: " HTTP_OR_HTTPS
     read -p "Digite o caminho do certificado (--cert): " CERT_PATH="/root/cert.pem"
+    
     fi
     
     if [[ $HTTP_OR_HTTPS == "H" || $HTTP_OR_HTTPS == "h" ]]; then
