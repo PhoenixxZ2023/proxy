@@ -19,7 +19,7 @@ else
     install_proxy
 fi
 
-
+# Desinstalar o proxy
 uninstall_proxy() {
     echo -e "\nDesinstalando o proxy..."
     
@@ -45,6 +45,7 @@ uninstall_proxy() {
     echo "Proxy desinstalado com sucesso."
 }
 
+# Mostrar portas em uso
 show_ports_in_use() {
     local ports_in_use=$(systemctl list-units --all --plain --no-legend | grep -oE 'proxy-[0-9]+' | cut -d'-' -f2)
     if [ -n "$ports_in_use" ]; then
@@ -108,7 +109,7 @@ configure_and_start_service() {
     echo "O serviço do proxy na porta $PORT foi configurado e iniciado automaticamente."
 }
 
-
+# Parar e remover serviços
 stop_and_remove_service() {
     read -p "QUAL PORTA DESEJA REMOVER: " service_number
     
